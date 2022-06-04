@@ -1,22 +1,19 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_start/screens/zekrShomar/zekr_shomar.dart';
-import 'package:flutter_start/services/storage_manager.dart';
 import 'package:get/get.dart';
 
 class ZekrCard extends StatelessWidget {
   ZekrCard(
       {Key? key,
+      required this.zekrId,
       required this.zekr,
       required this.zekrCount,
       required this.zekrCounted})
       : super(key: key);
+  final String zekrId;
   final String zekr;
   final int zekrCount;
   final int zekrCounted;
-
-  String? _mainZekr;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +21,11 @@ class ZekrCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // _mainZekr = jsonEncode(
-        //     {'zekr': zekr, 'zekrCount': zekrCount, 'zekrCounted': zekrCounted});
-        // StorageManager.saveData('mainZekr', _mainZekr);
-        // Navigator.of(context).pop();
         Get.to(ZekrShomar(
-            zekr: zekr, zekrCount: zekrCount, zekrCounted: zekrCounted));
+            zekrId: zekrId,
+            zekr: zekr,
+            zekrCount: zekrCount,
+            zekrCounted: zekrCounted));
       },
       child: Container(
           width: size.width,

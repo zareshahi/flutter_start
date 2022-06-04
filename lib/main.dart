@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
 
+  String zekrId = 'zekr2';
   String zekr = 'اللهم صل علی محمد و آل محمد';
   int zekrCount = 100;
   int zekrCounted = 0;
@@ -46,7 +47,7 @@ class _MyAppState extends State<MyApp> {
 
   Future getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _mainZekr = prefs.getString('mainZekr');
+    _mainZekr = prefs.getString('zekr2');
     if (_mainZekr != null) {
       _mainZekrMap = jsonDecode(_mainZekr ?? "");
       zekr = _mainZekrMap['zekr'];
@@ -67,6 +68,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(themeChangeProvider.darkTheme, context),
             home: ZekrShomar(
+              zekrId: zekrId,
               zekr: zekr,
               zekrCount: zekrCount,
               zekrCounted: zekrCounted,

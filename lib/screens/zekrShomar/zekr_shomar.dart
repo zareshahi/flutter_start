@@ -1,18 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_start/screens/settings/settings.dart';
 import 'package:flutter_start/screens/zekrList/zekr_list.dart';
+import 'package:flutter_start/services/storage_manager.dart';
 import 'package:get/get.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ZekrShomar extends StatefulWidget {
+  final String zekrId;
   final String zekr;
   final int zekrCount;
   int zekrCounted;
   ZekrShomar(
       {Key? key,
+      required this.zekrId,
       required this.zekr,
       required this.zekrCount,
       required this.zekrCounted})
@@ -25,11 +30,17 @@ class ZekrShomar extends StatefulWidget {
 class _ZekrShomarState extends State<ZekrShomar> {
   bool? _isVibrate;
   double? _fontSize;
+  Map zekrMap = {
+    'zekr': 'اللهم صل علی محمد و آل محمد',
+    'zekrCount': 100,
+    'zekrCounted': 0,
+  };
 
   Future _counterCount() async {
     await getPrefs();
     setState(() {
-      widget.zekrCounted++;
+      zekrMap['zekrCounted']++;
+      saveZekr();
       if (_isVibrate ?? false) {
         HapticFeedback.vibrate();
       }
@@ -38,8 +49,22 @@ class _ZekrShomarState extends State<ZekrShomar> {
 
   Future getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _isVibrate = prefs.getBool("vibrate");
-    _fontSize = prefs.getDouble('fontSize');
+    setState(() {
+      _isVibrate = prefs.getBool("vibrate");
+      _fontSize = prefs.getDouble('fontSize');
+    });
+  }
+
+  Future getZekr() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      zekrMap =
+          jsonDecode(prefs.getString(widget.zekrId) ?? jsonEncode(zekrMap));
+    });
+  }
+
+  void saveZekr() {
+    StorageManager.saveData(widget.zekrId, jsonEncode(zekrMap));
   }
 
   void _resetCounter() {
@@ -50,21 +75,10 @@ class _ZekrShomarState extends State<ZekrShomar> {
         dismissDirection: DismissDirection.horizontal,
         margin: const EdgeInsets.all(16));
     setState(() {
-      widget.zekrCounted = 0;
+      zekrMap['zekrCounted'] = 0;
+      saveZekr();
     });
-    // _showToast(context);
   }
-
-  // void _showToast(BuildContext context) {
-  //   final scaffold = ScaffoldMessenger.of(context);
-  //   scaffold.showSnackBar(
-  //     const SnackBar(
-  //       content: Text('شمارنده بازنشانی شد'),
-  //       //   action: SnackBarAction(
-  //       //       label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-  //     ),
-  //   );
-  // }
 
   void _showAlertDialog(BuildContext context) {
     // TODO: rtl direction
@@ -123,11 +137,10 @@ class _ZekrShomarState extends State<ZekrShomar> {
 
   @override
   void initState() {
-    print('init state');
     super.initState();
+    getZekr();
     getPrefs();
     PerfectVolumeControl.stream.listen((volume) {
-      print('volume');
       _counterCount();
     });
   }
@@ -150,7 +163,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
                       textDirection: TextDirection.rtl,
                       children: [
                         Text(
-                          widget.zekr,
+                          zekrMap['zekr'],
                           style: const TextStyle(fontSize: 32),
                           textDirection: TextDirection.rtl,
                           textAlign: TextAlign.center,
@@ -159,7 +172,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
                           height: 64,
                         ),
                         Text(
-                          '${widget.zekrCounted}',
+                          '${zekrMap['zekrCounted']}',
                           style: TextStyle(fontSize: _fontSize ?? 50),
                         ),
                         SizedBox(
