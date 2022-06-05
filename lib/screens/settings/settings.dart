@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_start/services/dark_theme_provider.dart';
-import 'package:flutter_start/services/storage_manager.dart';
+import 'package:zekr_shomar/services/dark_theme_provider.dart';
+import 'package:zekr_shomar/services/storage_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

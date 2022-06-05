@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_start/module/widget.dart';
+import 'package:zekr_shomar/module/widget.dart';
 import 'dart:math' as math;
 
 class HomePage extends StatelessWidget {

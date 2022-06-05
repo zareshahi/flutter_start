@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_start/screens/zekrShomar/zekr_shomar.dart';
+import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

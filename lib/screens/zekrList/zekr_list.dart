@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_start/screens/zekrList/components/zekr_card.dart';
+import 'package:zekr_shomar/screens/zekrList/add_zekr.dart';
+import 'package:zekr_shomar/screens/zekrList/components/zekr_card.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ZekrList extends StatefulWidget {
