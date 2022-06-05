@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,9 +34,20 @@ class _ZekrShomarState extends State<ZekrShomar> {
   Future _counterCount() async {
     await getPrefs();
     setState(() {
-      zekrMap['zekrCounted']++;
-      saveZekr();
-      if (_isVibrate ?? false) {
+      if (zekrMap['zekrCounted'] < zekrMap['zekrCount']) {
+        // counting remaining
+        zekrMap['zekrCounted']++;
+        saveZekr();
+        if (_isVibrate ?? false) {
+          HapticFeedback.vibrate();
+        }
+      } else {
+        // Counter reaches end
+        _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
+        HapticFeedback.vibrate();
+        sleep(const Duration(milliseconds: 200));
+        HapticFeedback.vibrate();
+        sleep(const Duration(milliseconds: 200));
         HapticFeedback.vibrate();
       }
     });
@@ -74,7 +86,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
     });
   }
 
-  void _showAlertDialog(BuildContext context) {
+  void _showResetAlertDialog(BuildContext context, String message) {
     // TODO: rtl direction
     // set up the buttons
     Widget cancelButton = TextButton(
@@ -91,7 +103,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
       },
     );
     AlertDialog alert = AlertDialog(
-      title: const Text("هشدار"),
+      title: Text(message),
       content: const Text("آیا می‌خواهید شمارنده صفر شود"),
       actions: [
         cancelButton,
@@ -215,7 +227,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
               label: 'صفر کردن شمارنده',
               // backgroundColor: Colors.amberAccent,
               onTap: () {
-                _showAlertDialog(context);
+                _showResetAlertDialog(context, 'هشدار');
               },
             ),
             SpeedDialChild(
