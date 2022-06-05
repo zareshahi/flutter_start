@@ -86,7 +86,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Slider(
-                  value: _fontSize ?? 10,
+                  value: _fontSize ?? 50,
                   max: 100,
                   label: _fontSize?.round().toString() ?? '',
                   onChanged: (value) => {
@@ -96,7 +96,7 @@ class _SettingsState extends State<Settings> {
                     })
                   },
                 ),
-                Text(_fontSize?.round().toString() ?? ''),
+                Text(_fontSize?.round().toString() ?? '50'),
                 const SizedBox(
                   width: 16,
                 ),
