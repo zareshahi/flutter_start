@@ -23,21 +23,12 @@ class _MyAppState extends State<MyApp> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
 
   String zekrId = 'zekr2';
-  String zekr = 'اللهم صل علی محمد و آل محمد';
-  int zekrCount = 100;
-  int zekrCounted = 0;
-  String? _mainZekr;
-  Map _mainZekrMap = {
-    'zekr': 'اللهم صل علی محمد و آل محمد',
-    'zekrCount': 100,
-    'zekrCounted': 0,
-  };
 
   @override
   void initState() {
+    getPrefs();
     super.initState();
     getCurrentAppTheme();
-    getPrefs();
   }
 
   void getCurrentAppTheme() async {
@@ -45,15 +36,10 @@ class _MyAppState extends State<MyApp> {
         await themeChangeProvider.darkThemePreference.getTheme();
   }
 
-  Future getPrefs() async {
+  Future<String> getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _mainZekr = prefs.getString('zekr2');
-    if (_mainZekr != null) {
-      _mainZekrMap = jsonDecode(_mainZekr ?? "");
-      zekr = _mainZekrMap['zekr'];
-      zekrCount = _mainZekrMap['zekrCount'];
-      zekrCounted = _mainZekrMap['zekrCounted'];
-    }
+    zekrId = prefs.getString('mainZekr') ?? 'zekr2';
+    return zekrId;
   }
 
   @override
@@ -64,16 +50,23 @@ class _MyAppState extends State<MyApp> {
       },
       child: Consumer<DarkThemeProvider>(
         builder: (BuildContext context, value, Widget? child) {
-          return GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-            home: ZekrShomar(
-              zekrId: zekrId,
-              zekr: zekr,
-              zekrCount: zekrCount,
-              zekrCounted: zekrCounted,
-            ),
-          );
+          return FutureBuilder(
+              future: getPrefs(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return GetMaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    theme: Styles.themeData(
+                        themeChangeProvider.darkTheme, context),
+                    home: ZekrShomar(
+                      zekrId: zekrId,
+                    ),
+                  );
+                } else {
+                  // Returns empty container untill the data is loaded
+                  return Container();
+                }
+              });
         },
       ),
     );

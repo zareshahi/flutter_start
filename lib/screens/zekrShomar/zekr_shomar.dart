@@ -12,16 +12,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ZekrShomar extends StatefulWidget {
   final String zekrId;
-  final String zekr;
-  final int zekrCount;
-  int zekrCounted;
-  ZekrShomar(
-      {Key? key,
-      required this.zekrId,
-      required this.zekr,
-      required this.zekrCount,
-      required this.zekrCounted})
-      : super(key: key);
+  const ZekrShomar({
+    Key? key,
+    required this.zekrId,
+  }) : super(key: key);
 
   @override
   State<ZekrShomar> createState() => _ZekrShomarState();

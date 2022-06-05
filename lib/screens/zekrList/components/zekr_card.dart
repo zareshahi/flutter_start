@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_start/screens/zekrShomar/zekr_shomar.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ZekrCard extends StatelessWidget {
   ZekrCard(
@@ -15,17 +16,24 @@ class ZekrCard extends StatelessWidget {
   final int zekrCount;
   final int zekrCounted;
 
+  Future<void> setMainZekr(String zekrId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('mainZekr', zekrId);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return GestureDetector(
       onTap: () {
+        setMainZekr(zekrId);
         Get.to(ZekrShomar(
-            zekrId: zekrId,
-            zekr: zekr,
-            zekrCount: zekrCount,
-            zekrCounted: zekrCounted));
+          zekrId: zekrId,
+          // zekr: zekr,
+          // zekrCount: zekrCount,
+          // zekrCounted: zekrCounted
+        ));
       },
       child: Container(
           width: size.width,
