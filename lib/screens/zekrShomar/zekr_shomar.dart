@@ -26,10 +26,12 @@ class _ZekrShomarState extends State<ZekrShomar> {
   bool? _isVibrate;
   double? _fontSize;
   Map zekrMap = {
+    'id': 2,
     'zekr': 'اللهم صل علی محمد و آل محمد',
     'zekrCount': 100,
     'zekrCounted': 0,
   };
+  String zekrId = 'zekr2';
 
   Future _counterCount() async {
     await getPrefs();
@@ -64,13 +66,12 @@ class _ZekrShomarState extends State<ZekrShomar> {
   Future getZekr() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      zekrMap =
-          jsonDecode(prefs.getString(widget.zekrId) ?? jsonEncode(zekrMap));
+      zekrMap = jsonDecode(prefs.getString(zekrId) ?? jsonEncode(zekrMap));
     });
   }
 
   void saveZekr() {
-    StorageManager.saveData(widget.zekrId, jsonEncode(zekrMap));
+    StorageManager.saveData(zekrId, jsonEncode(zekrMap));
   }
 
   void _resetCounter() {
@@ -143,9 +144,19 @@ class _ZekrShomarState extends State<ZekrShomar> {
         false;
   }
 
+  getZekrId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (widget.zekrId == 'mainZekr') {
+      zekrId = prefs.getString('mainZekr') ?? '';
+    } else {
+      zekrId = widget.zekrId;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getZekrId();
     getZekr();
     getPrefs();
     PerfectVolumeControl.stream.listen((volume) {

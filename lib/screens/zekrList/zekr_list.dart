@@ -6,9 +6,13 @@ import 'package:zekr_shomar/screens/zekrList/add_zekr.dart';
 import 'package:zekr_shomar/screens/zekrList/components/zekr_card.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
 
 class ZekrList extends StatefulWidget {
   const ZekrList({Key? key}) : super(key: key);
+  getZekrList() {
+    _ZekrListState().getZekrList();
+  }
 
   @override
   State<ZekrList> createState() => _ZekrListState();
@@ -23,8 +27,12 @@ class _ZekrListState extends State<ZekrList> {
     setState(() {
       zekrLen = prefs.getInt('zekrLen') ?? 0;
       for (int i = 1; i <= zekrLen; i++) {
-        Map zekrMap = jsonDecode(prefs.getString('zekr$i') ?? '');
-        zekrList.add(zekrMap);
+        try {
+          Map zekrMap = jsonDecode(prefs.getString('zekr$i') ?? '');
+          zekrList.add(zekrMap);
+        } on Exception {
+          continue;
+        }
       }
     });
   }
@@ -94,59 +102,65 @@ class _ZekrListState extends State<ZekrList> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.to(AddZekr()),
-        tooltip: 'اضافه کردن ذکر',
-        child: const Icon(Icons.add),
-      ),
-      body: Container(
-        width: size.width,
-        height: size.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('images/background.jpg'),
-              fit: BoxFit.fitHeight),
+    return WillPopScope(
+      onWillPop: () {
+        Get.to(const ZekrShomar(zekrId: 'mainZekr'));
+        return Future.value(false);
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Get.to(AddZekr()),
+          tooltip: 'اضافه کردن ذکر',
+          child: const Icon(Icons.add),
         ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-          child: Container(
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Container(
-                    width: size.width,
-                    margin: const EdgeInsets.all(16),
-                    height: 64,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'لیست اذکار',
-                        style: TextStyle(color: Colors.black, fontSize: 20),
+        body: Container(
+          width: size.width,
+          height: size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('images/background.jpg'),
+                fit: BoxFit.fitHeight),
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      width: size.width,
+                      margin: const EdgeInsets.all(16),
+                      height: 64,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'لیست اذکار',
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ListView.builder(
-                        itemCount: zekrList.length,
-                        itemBuilder: (context, index) {
-                          return ZekrCard(
-                            zekrId: 'zekr${index + 1}',
-                            zekr: zekrList[index]['zekr'],
-                            zekrCount: zekrList[index]['zekrCount'],
-                            zekrCounted: zekrList[index]['zekrCounted'],
-                          );
-                        },
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ListView.builder(
+                          itemCount: zekrList.length,
+                          itemBuilder: (context, index) {
+                            return ZekrCard(
+                              zekrId: 'zekr${zekrList[index]["id"]}',
+                              zekr: zekrList[index]['zekr'],
+                              zekrCount: zekrList[index]['zekrCount'],
+                              zekrCounted: zekrList[index]['zekrCounted'],
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
