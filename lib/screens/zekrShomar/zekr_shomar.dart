@@ -114,30 +114,32 @@ class _ZekrShomarState extends State<ZekrShomar> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alert;
+        return Directionality(textDirection: TextDirection.rtl, child: alert);
       },
     );
   }
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('هشدار'),
-            content: const Text('آیا میخواهید از برنامه خارج شوید؟'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('نه'),
-              ),
-              TextButton(
-                onPressed: () =>
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
-                child: const Text('بله'),
-              ),
-            ],
-          ),
-        )) ??
+            context: context,
+            builder: (context) => Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: AlertDialog(
+                    title: const Text('هشدار'),
+                    content: const Text('آیا میخواهید از برنامه خارج شوید؟'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('نه'),
+                      ),
+                      TextButton(
+                        onPressed: () => SystemChannels.platform
+                            .invokeMethod('SystemNavigator.pop'),
+                        child: const Text('بله'),
+                      ),
+                    ],
+                  ),
+                ))) ??
         false;
   }
 
