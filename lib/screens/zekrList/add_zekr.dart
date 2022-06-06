@@ -98,7 +98,7 @@ class AddZekr extends StatelessWidget {
                   if (_formKey.currentState!.validate()) {
                     // If the form is valid, display a snackbar. In the real world,
                     // you'd often call a server or save the information in a database.
-                    // _saveZekr(_zekr.text, int.parse(_zekrCount.text));
+                    _saveZekr(_zekr.text, int.parse(_zekrCount.text));
                     Get.snackbar("اطلاع", "ذکر ذخیره شد",
                         snackPosition: SnackPosition.BOTTOM,
                         duration: const Duration(seconds: 5),
