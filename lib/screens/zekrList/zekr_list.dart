@@ -78,6 +78,7 @@ class _ZekrListState extends State<ZekrList> {
           jsonEncode(
               {'id': 6, 'zekr': 'یا مبدل', 'zekrCount': 76, 'zekrCounted': 0}));
       prefs.setInt('zekrLen', 6);
+      prefs.setInt('lastZekrId', 6);
       prefs.setBool('initZekr', false);
     }
   }

@@ -14,14 +14,16 @@ class AddZekr extends StatelessWidget {
 
   void _saveZekr(String zekr, int zekrCount) async {
     final prefs = await SharedPreferences.getInstance();
+    int lastZekrId = prefs.getInt('lastZekrId') ?? 0;
     int zekrLen = prefs.getInt('zekrLen') ?? 0;
     Map zekrMap = {
-      'id': zekrLen + 1,
+      'id': lastZekrId + 1,
       'zekr': zekr,
       'zekrCount': zekrCount,
       'zekrCounted': 0
     };
-    prefs.setString('zekr${zekrLen + 1}', jsonEncode(zekrMap));
+    prefs.setString('zekr${lastZekrId + 1}', jsonEncode(zekrMap));
+    prefs.setInt('lastZekrId', lastZekrId + 1);
     prefs.setInt('zekrLen', zekrLen + 1);
     Get.to(const ZekrList());
   }
