@@ -94,6 +94,11 @@ class _ZekrListState extends State<ZekrList> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Get.to(AddZekr()),
+        tooltip: 'اضافه کردن ذکر',
+        child: const Icon(Icons.add),
+      ),
       body: Container(
         width: size.width,
         height: size.height,
