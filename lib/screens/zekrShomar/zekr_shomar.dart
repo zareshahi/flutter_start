@@ -38,6 +38,15 @@ class _ZekrShomarState extends State<ZekrShomar> {
     setState(() {
       if (zekrMap['zekrCounted'] < zekrMap['zekrCount']) {
         // counting remaining
+        if (zekrMap['zekrCounted'] == zekrMap['zekrCount'] - 1) {
+          // Counter reaches end
+          _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
+          HapticFeedback.vibrate();
+          sleep(const Duration(milliseconds: 200));
+          HapticFeedback.vibrate();
+          sleep(const Duration(milliseconds: 200));
+          HapticFeedback.vibrate();
+        }
         zekrMap['zekrCounted']++;
         saveZekr();
         if (_isVibrate ?? false) {
@@ -88,7 +97,6 @@ class _ZekrShomarState extends State<ZekrShomar> {
   }
 
   void _showResetAlertDialog(BuildContext context, String message) {
-    // TODO: rtl direction
     // set up the buttons
     Widget cancelButton = TextButton(
       child: const Text("خیر"),
