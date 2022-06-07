@@ -190,9 +190,33 @@ class ZekrCard extends StatelessWidget {
                               color: Colors.black, fontSize: 24),
                         ),
                       ),
-                      Text(
-                        '$zekrCounted :شمرده شده',
-                        style: const TextStyle(color: Colors.black),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            '$zekrCounted :شمرده شده',
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          if (zekrId == 'zekr1') ...[
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              margin: const EdgeInsets.only(left: 4),
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
+                              ),
+                              child: const Text(
+                                'ذکر روز',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
                       ),
                     ],
                   ),
