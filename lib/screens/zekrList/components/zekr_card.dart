@@ -23,6 +23,13 @@ class ZekrCard extends StatelessWidget {
     prefs.setString('mainZekr', zekrId);
   }
 
+  Future<void> removeZekr(String zekrId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    StorageManager.deleteData(zekrId);
+    int zekrLen = prefs.getInt('zekrLen') ?? 0;
+    prefs.setInt('zekrLen', zekrLen - 1);
+  }
+
   Widget slideRightBackground() {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -130,7 +137,7 @@ class ZekrCard extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Delete the item
-                          StorageManager.deleteData(zekrId);
+                          removeZekr(zekrId);
                           Navigator.of(context).pop(true);
                         },
                       ),

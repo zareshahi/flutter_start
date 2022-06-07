@@ -68,8 +68,8 @@ class _ZekrListState extends State<ZekrList> {
       await getDailyZekr();
     }
     setState(() {
-      zekrLen = prefs.getInt('zekrLen') ?? 0;
-      for (int i = 1; i <= zekrLen; i++) {
+      var lastZekrId = prefs.getInt('lastZekrId') ?? 0;
+      for (int i = 1; i <= lastZekrId; i++) {
         try {
           Map zekrMap = jsonDecode(prefs.getString('zekr$i') ?? '');
           zekrList.add(zekrMap);
