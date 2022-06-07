@@ -82,6 +82,7 @@ class _ZekrListState extends State<ZekrList> {
 
   Future<void> initZekr() async {
     final prefs = await SharedPreferences.getInstance();
+    // prefs.setBool('initZekr', true); // only for reset storage
     bool initZekr = prefs.getBool('initZekr') ?? true;
     if (initZekr) {
       prefs.setString(
@@ -129,22 +130,21 @@ class _ZekrListState extends State<ZekrList> {
           jsonEncode(
               {'id': 6, 'zekr': 'یا مبدل', 'zekrCount': 76, 'zekrCounted': 0}));
       prefs.setString(
-          'zekr1',
+          'zekr7',
           jsonEncode({
             'id': 7,
             'zekr': 'یا قوی',
             'zekrCount': 116,
             'zekrCounted': 0,
           }));
-      prefs.setInt('zekrLen', 6);
-      prefs.setInt('lastZekrId', 6);
+      prefs.setInt('zekrLen', 7);
+      prefs.setInt('lastZekrId', 7);
       prefs.setBool('initZekr', false);
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initZekr();
     getZekrList();
@@ -160,7 +160,7 @@ class _ZekrListState extends State<ZekrList> {
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Get.to(AddZekr()),
+          onPressed: () => Get.to(() => const AddZekr()),
           tooltip: 'اضافه کردن ذکر',
           child: const Icon(Icons.add),
         ),
