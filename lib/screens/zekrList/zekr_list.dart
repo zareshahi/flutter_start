@@ -63,7 +63,10 @@ class _ZekrListState extends State<ZekrList> {
 
   Future<void> getZekrList() async {
     final prefs = await SharedPreferences.getInstance();
-    await getDailyZekr();
+    if (prefs.getString('zekr1') != null) {
+      // check if daily zekr not deleted
+      await getDailyZekr();
+    }
     setState(() {
       zekrLen = prefs.getInt('zekrLen') ?? 0;
       for (int i = 1; i <= zekrLen; i++) {
