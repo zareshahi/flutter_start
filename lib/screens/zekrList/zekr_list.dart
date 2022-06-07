@@ -10,9 +10,6 @@ import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
 
 class ZekrList extends StatefulWidget {
   const ZekrList({Key? key}) : super(key: key);
-  getZekrList() {
-    _ZekrListState().getZekrList();
-  }
 
   @override
   State<ZekrList> createState() => _ZekrListState();
