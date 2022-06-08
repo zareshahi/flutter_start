@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zekr_shomar/services/storage_manager.dart';
 
-class ZekrCard extends StatelessWidget {
-  const ZekrCard(
+class ZekrCard extends StatefulWidget {
+  ZekrCard(
       {Key? key,
       required this.zekrId,
       required this.zekr,
@@ -17,6 +17,14 @@ class ZekrCard extends StatelessWidget {
   final String zekr;
   final int zekrCount;
   final int zekrCounted;
+
+  @override
+  State<ZekrCard> createState() => _ZekrCardState();
+}
+
+class _ZekrCardState extends State<ZekrCard> {
+  DateTime date = DateTime.now();
+  String day = '';
 
   Future<void> setMainZekr(String zekrId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,6 +111,41 @@ class ZekrCard extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    setState(() {
+      switch (date.weekday) {
+        case 1:
+          day = 'دوشنبه';
+          break;
+        case 2:
+          day = 'سه شنبه';
+          break;
+        case 3:
+          day = 'چهارشنبه';
+          break;
+        case 4:
+          day = 'پنج شنبه';
+          break;
+        case 5:
+          // friday
+          day = 'جمعه';
+          break;
+        case 6:
+          // saturday
+          day = 'شنبه';
+          break;
+        case 7:
+          // sunday
+          day = 'یکشنبه';
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
@@ -119,7 +162,8 @@ class ZekrCard extends StatelessWidget {
                 return Directionality(
                   textDirection: TextDirection.rtl,
                   child: AlertDialog(
-                    content: Text("آیا میخواهید ذکر «$zekr» را پاک کنید؟"),
+                    content:
+                        Text("آیا میخواهید ذکر «${widget.zekr}» را پاک کنید؟"),
                     actions: <Widget>[
                       TextButton(
                         child: const Text(
@@ -137,7 +181,7 @@ class ZekrCard extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Delete the item
-                          removeZekr(zekrId);
+                          removeZekr(widget.zekrId);
                           Navigator.of(context).pop(true);
                         },
                       ),
@@ -148,19 +192,19 @@ class ZekrCard extends StatelessWidget {
         } else {
           // Navigate to edit page;
           Get.to(AddZekr(
-            editZekr: zekr,
-            editZekrId: zekrId,
-            editZekrCount: zekrCount,
-            editZekrCounted: zekrCounted,
+            editZekr: widget.zekr,
+            editZekrId: widget.zekrId,
+            editZekrCount: widget.zekrCount,
+            editZekrCounted: widget.zekrCounted,
           ));
           return null;
         }
       },
       child: GestureDetector(
         onTap: () {
-          setMainZekr(zekrId);
+          setMainZekr(widget.zekrId);
           Get.to(ZekrShomar(
-            zekrId: zekrId,
+            zekrId: widget.zekrId,
             // zekr: zekr,
             // zekrCount: zekrCount,
             // zekrCounted: zekrCounted
@@ -180,7 +224,7 @@ class ZekrCard extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.only(right: 16),
                   child: Text(
-                    zekrCount.toString(),
+                    widget.zekrCount.toString(),
                     style: const TextStyle(color: Colors.black, fontSize: 32),
                   ),
                 ),
@@ -192,7 +236,7 @@ class ZekrCard extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         reverse: true,
                         child: Text(
-                          zekr,
+                          widget.zekr,
                           style: const TextStyle(
                               color: Colors.black, fontSize: 24),
                         ),
@@ -201,10 +245,10 @@ class ZekrCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            '$zekrCounted :شمرده شده',
+                            '${widget.zekrCounted} :شمرده شده',
                             style: const TextStyle(color: Colors.black),
                           ),
-                          if (zekrId == 'zekr1') ...[
+                          if (widget.zekrId == 'zekr1') ...[
                             Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8),
@@ -215,9 +259,9 @@ class ZekrCard extends StatelessWidget {
                                   Radius.circular(6),
                                 ),
                               ),
-                              child: const Text(
-                                'ذکر روز',
-                                style: TextStyle(
+                              child: Text(
+                                'ذکر روز $day',
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
