@@ -145,12 +145,13 @@ class _AddZekrState extends State<AddZekr> {
                     // If the form is valid, display a snackbar. In the real world,
                     // you'd often call a server or save the information in a database.
                     _saveZekr(_zekr.text, int.parse(_zekrCount.text));
-                    Get.snackbar("اطلاع", "ذکر ذخیره شد",
-                        snackPosition: SnackPosition.BOTTOM,
-                        duration: const Duration(seconds: 5),
-                        isDismissible: true,
-                        dismissDirection: DismissDirection.horizontal,
-                        margin: const EdgeInsets.all(16));
+                    const snackBar = SnackBar(
+                      content: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Text('ذکر ذخیره شد'),
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
                 child: const Text('ذخیره'),

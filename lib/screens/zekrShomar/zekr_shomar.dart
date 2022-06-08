@@ -84,16 +84,17 @@ class _ZekrShomarState extends State<ZekrShomar> {
   }
 
   void _resetCounter() {
-    Get.snackbar("اطلاع", "شمارنده بازنشانی شد",
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 5),
-        isDismissible: true,
-        dismissDirection: DismissDirection.horizontal,
-        margin: const EdgeInsets.all(16));
     setState(() {
       zekrMap['zekrCounted'] = 0;
       saveZekr();
     });
+    const snackBar = SnackBar(
+      content: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Text('شمارنده بازنشانی شد'),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _showResetAlertDialog(BuildContext context, String message) {
