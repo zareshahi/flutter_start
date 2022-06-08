@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zekr_shomar/module/dark_theme_styles.dart';
 import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
 import 'package:zekr_shomar/services/dark_theme_provider.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,7 +51,7 @@ class _MyAppState extends State<MyApp> {
               future: getPrefs(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
-                  return GetMaterialApp(
+                  return MaterialApp(
                     debugShowCheckedModeBanner: false,
                     theme: Styles.themeData(
                         themeChangeProvider.darkTheme, context),

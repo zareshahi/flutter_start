@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:zekr_shomar/screens/zekrList/add_zekr.dart';
 import 'package:zekr_shomar/screens/zekrList/components/zekr_card.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
 
@@ -155,12 +154,24 @@ class _ZekrListState extends State<ZekrList> {
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () {
-        Get.to(const ZekrShomar(zekrId: 'mainZekr'));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ZekrShomar(zekrId: 'mainZekr'),
+          ),
+        );
         return Future.value(false);
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Get.to(() => const AddZekr()),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddZekr(),
+              ),
+            );
+          },
           tooltip: 'اضافه کردن ذکر',
           child: const Icon(Icons.add),
         ),

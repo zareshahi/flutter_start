@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zekr_shomar/screens/zekrList/add_zekr.dart';
 import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zekr_shomar/services/storage_manager.dart';
 
 class ZekrCard extends StatefulWidget {
-  ZekrCard(
+  const ZekrCard(
       {Key? key,
       required this.zekrId,
       required this.zekr,
@@ -191,24 +190,34 @@ class _ZekrCardState extends State<ZekrCard> {
               });
         } else {
           // Navigate to edit page;
-          Get.to(AddZekr(
-            editZekr: widget.zekr,
-            editZekrId: widget.zekrId,
-            editZekrCount: widget.zekrCount,
-            editZekrCounted: widget.zekrCounted,
-          ));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddZekr(
+                editZekr: widget.zekr,
+                editZekrId: widget.zekrId,
+                editZekrCount: widget.zekrCount,
+                editZekrCounted: widget.zekrCounted,
+              ),
+            ),
+          );
           return null;
         }
       },
       child: GestureDetector(
         onTap: () {
           setMainZekr(widget.zekrId);
-          Get.to(ZekrShomar(
-            zekrId: widget.zekrId,
-            // zekr: zekr,
-            // zekrCount: zekrCount,
-            // zekrCounted: zekrCounted
-          ));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ZekrShomar(
+                zekrId: widget.zekrId,
+                // zekr: zekr,
+                // zekrCount: zekrCount,
+                // zekrCounted: zekrCounted
+              ),
+            ),
+          );
         },
         child: Container(
             width: size.width,

@@ -7,7 +7,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:zekr_shomar/screens/settings/settings.dart';
 import 'package:zekr_shomar/screens/zekrList/zekr_list.dart';
 import 'package:zekr_shomar/services/storage_manager.dart';
-import 'package:get/get.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -175,6 +174,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -204,7 +204,7 @@ class _ZekrShomarState extends State<ZekrShomar> {
                           style: TextStyle(fontSize: _fontSize ?? 50),
                         ),
                         SizedBox(
-                          height: Get.height / 6,
+                          height: size.height / 6,
                         ),
                       ],
                     ),
@@ -232,7 +232,10 @@ class _ZekrShomarState extends State<ZekrShomar> {
               label: 'تنظیمات',
               // backgroundColor: Colors.amberAccent,
               onTap: () {
-                Get.to(() => const Settings());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Settings()),
+                );
               },
             ),
             SpeedDialChild(
@@ -240,8 +243,8 @@ class _ZekrShomarState extends State<ZekrShomar> {
               label: 'لیست اذکار',
               // backgroundColor: Colors.amberAccent,
               onTap: () {
-                Get.to(() => const ZekrList());
-                /* Do something */
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const ZekrList()));
               },
             ),
             SpeedDialChild(

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zekr_shomar/screens/zekrList/zekr_list.dart';
 
@@ -62,7 +61,9 @@ class _AddZekrState extends State<AddZekr> {
       };
       prefs.setString(widget.editZekrId!, jsonEncode(zekrMap));
     }
-    Get.to(const ZekrList());
+    if (!mounted) return;
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const ZekrList()));
   }
 
   @override
