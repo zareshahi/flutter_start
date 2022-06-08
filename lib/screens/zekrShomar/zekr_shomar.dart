@@ -252,12 +252,12 @@ class _ZekrShomarState extends State<ZekrShomar> {
                 _showResetAlertDialog(context, 'هشدار');
               },
             ),
-            SpeedDialChild(
-              child: const Icon(Icons.info),
-              label: 'درباره ما',
-              // backgroundColor: Colors.amberAccent,
-              onTap: () {/* Do something */},
-            ),
+            // SpeedDialChild(
+            //   child: const Icon(Icons.info),
+            //   label: 'درباره ما',
+            //   // backgroundColor: Colors.amberAccent,
+            //   onTap: () {/* Do something */},
+            // ),
           ],
         ),
       ),
