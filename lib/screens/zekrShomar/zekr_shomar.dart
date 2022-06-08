@@ -228,17 +228,6 @@ class _ZekrShomarState extends State<ZekrShomar> {
           // backgroundColor: Colors.amber,
           children: [
             SpeedDialChild(
-              child: const Icon(Icons.settings),
-              label: 'تنظیمات',
-              // backgroundColor: Colors.amberAccent,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Settings()),
-                );
-              },
-            ),
-            SpeedDialChild(
               child: const Icon(Icons.list),
               label: 'لیست اذکار',
               // backgroundColor: Colors.amberAccent,
@@ -253,6 +242,17 @@ class _ZekrShomarState extends State<ZekrShomar> {
               // backgroundColor: Colors.amberAccent,
               onTap: () {
                 _showResetAlertDialog(context, 'هشدار');
+              },
+            ),
+            SpeedDialChild(
+              child: const Icon(Icons.settings),
+              label: 'تنظیمات',
+              // backgroundColor: Colors.amberAccent,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Settings()),
+                );
               },
             ),
             // SpeedDialChild(
