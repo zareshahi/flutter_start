@@ -257,7 +257,7 @@ class _ZekrCardState extends State<ZekrCard> {
                             '${widget.zekrCounted} :شمرده شده',
                             style: const TextStyle(color: Colors.black),
                           ),
-                          if (widget.zekrId == 'zekr1') ...[
+                          if (widget.zekrId == 'zekr0') ...[
                             Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8),

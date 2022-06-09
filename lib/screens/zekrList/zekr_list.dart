@@ -20,8 +20,8 @@ class _ZekrListState extends State<ZekrList> {
 
   Future<void> getDailyZekr() async {
     final prefs = await SharedPreferences.getInstance();
-    var zekr1 = prefs.getString('zekr1');
-    var zekrMap = jsonDecode(zekr1 ?? '');
+    var zekr0 = prefs.getString('zekr0');
+    var zekrMap = jsonDecode(zekr0 ?? '');
     DateTime date = DateTime.now();
     switch (date.weekday) {
       case 1:
@@ -57,18 +57,22 @@ class _ZekrListState extends State<ZekrList> {
         break;
     }
     zekrMap['zekrCount'] = 100;
-    prefs.setString('zekr1', jsonEncode(zekrMap));
+    prefs.setString('zekr0', jsonEncode(zekrMap));
+  }
+
+  Future<void> getOnlineZekrList() async {
+    
   }
 
   Future<void> getZekrList() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('zekr1') != null) {
+    if (prefs.getString('zekr0') != null) {
       // check if daily zekr not deleted
       await getDailyZekr();
     }
     setState(() {
       var lastZekrId = prefs.getInt('lastZekrId') ?? 0;
-      for (int i = 1; i <= lastZekrId; i++) {
+      for (int i = 0; i <= lastZekrId; i++) {
         try {
           Map zekrMap = jsonDecode(prefs.getString('zekr$i') ?? '');
           zekrList.add(zekrMap);
@@ -85,59 +89,63 @@ class _ZekrListState extends State<ZekrList> {
     bool initZekr = prefs.getBool('initZekr') ?? true;
     if (initZekr) {
       prefs.setString(
-          'zekr1',
+          'zekr0',
           jsonEncode({
-            'id': 1,
+            'id': 0,
             'zekr': 'ذکر ایام هفته',
             'zekrCount': 100,
             'zekrCounted': 0,
           }));
       prefs.setString(
-          'zekr2',
+          'zekr102',
           jsonEncode({
-            'id': 2,
+            'id': 102,
             'zekr': 'اللهم صل علی محمد و آل محمد',
             'zekrCount': 100,
             'zekrCounted': 0
           }));
       prefs.setString(
-          'zekr3',
+          'zekr103',
           jsonEncode({
-            'id': 3,
+            'id': 103,
             'zekr': 'یا میسر',
             'zekrCount': 310,
             'zekrCounted': 0,
           }));
       prefs.setString(
-          'zekr4',
+          'zekr104',
           jsonEncode({
-            'id': 4,
+            'id': 104,
             'zekr': 'یا منعم',
             'zekrCount': 200,
             'zekrCounted': 0,
           }));
       prefs.setString(
-          'zekr5',
+          'zekr105',
           jsonEncode({
-            'id': 5,
+            'id': 105,
             'zekr': 'یا غنی',
             'zekrCount': 100,
             'zekrCounted': 0,
           }));
       prefs.setString(
-          'zekr6',
-          jsonEncode(
-              {'id': 6, 'zekr': 'یا مبدل', 'zekrCount': 76, 'zekrCounted': 0}));
-      prefs.setString(
-          'zekr7',
+          'zekr106',
           jsonEncode({
-            'id': 7,
+            'id': 106,
+            'zekr': 'یا مبدل',
+            'zekrCount': 76,
+            'zekrCounted': 0
+          }));
+      prefs.setString(
+          'zekr107',
+          jsonEncode({
+            'id': 107,
             'zekr': 'یا قوی',
             'zekrCount': 116,
             'zekrCounted': 0,
           }));
       prefs.setInt('zekrLen', 7);
-      prefs.setInt('lastZekrId', 7);
+      prefs.setInt('lastZekrId', 107);
       prefs.setBool('initZekr', false);
     }
   }
