@@ -102,6 +102,8 @@ class _ZekrListState extends State<ZekrList> {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // refresh the page
+      getZekrList();
       return null;
     }
   }
