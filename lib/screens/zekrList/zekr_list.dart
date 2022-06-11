@@ -6,6 +6,7 @@ import 'package:zekr_shomar/screens/zekrList/add_zekr.dart';
 import 'package:zekr_shomar/screens/zekrList/components/zekr_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zekr_shomar/screens/zekrShomar/zekr_shomar.dart';
+import 'package:http/http.dart' as http;
 
 class ZekrList extends StatefulWidget {
   const ZekrList({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class ZekrList extends StatefulWidget {
 class _ZekrListState extends State<ZekrList> {
   int zekrLen = 0;
   List zekrList = [];
+  var url = Uri.parse('http://192.168.1.105:5642/zekr');
 
   Future<void> getDailyZekr() async {
     final prefs = await SharedPreferences.getInstance();
@@ -60,19 +62,64 @@ class _ZekrListState extends State<ZekrList> {
     prefs.setString('zekr0', jsonEncode(zekrMap));
   }
 
-  Future<void> getOnlineZekrList() async {
-    
+  Future getOnlineZekrList() async {
+    final prefs = await SharedPreferences.getInstance();
+    // remove old online zekr values
+    for (int i = 1; i < 101; i++) {
+      try {
+        // remove values in local storage
+        prefs.remove('zekr$i');
+      } catch (e) {
+        continue;
+      }
+    }
+    try {
+      http.Response response =
+          await http.get(url).timeout(const Duration(seconds: 5));
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        //Creating a list to store input data;
+        for (var singleZekr in responseData) {
+          Map zekrMap = {
+            'id': singleZekr["id"],
+            'zekr': singleZekr["zekr"],
+            'zekrCount': singleZekr["zekrcount"],
+            'zekrCounted': singleZekr["zekrcounted"]
+          };
+          prefs.setString('zekr${singleZekr["id"]}', jsonEncode(zekrMap));
+        }
+        getZekrList();
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load zekr');
+      }
+    } catch (e) {
+      const snackBar = SnackBar(
+        content: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Text('دریافت اذکار آنلاین با خطا مواجه شد'),
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return null;
+    }
   }
 
   Future<void> getZekrList() async {
+    zekrList = [];
     final prefs = await SharedPreferences.getInstance();
+    // add daily zekr
     if (prefs.getString('zekr0') != null) {
       // check if daily zekr not deleted
       await getDailyZekr();
+      zekrList.add(jsonDecode(prefs.getString('zekr0') ?? ''));
     }
+    // add other zekrs
     setState(() {
+      // add offline zekrs
       var lastZekrId = prefs.getInt('lastZekrId') ?? 0;
-      for (int i = 0; i <= lastZekrId; i++) {
+      for (int i = 1; i <= lastZekrId; i++) {
         try {
           Map zekrMap = jsonDecode(prefs.getString('zekr$i') ?? '');
           zekrList.add(zekrMap);
@@ -155,6 +202,7 @@ class _ZekrListState extends State<ZekrList> {
     super.initState();
     initZekr();
     getZekrList();
+    getOnlineZekrList();
   }
 
   @override
@@ -216,16 +264,19 @@ class _ZekrListState extends State<ZekrList> {
                     Expanded(
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ListView.builder(
-                          itemCount: zekrList.length,
-                          itemBuilder: (context, index) {
-                            return ZekrCard(
-                              zekrId: 'zekr${zekrList[index]["id"]}',
-                              zekr: zekrList[index]['zekr'],
-                              zekrCount: zekrList[index]['zekrCount'],
-                              zekrCounted: zekrList[index]['zekrCounted'],
-                            );
-                          },
+                        child: RefreshIndicator(
+                          onRefresh: getOnlineZekrList,
+                          child: ListView.builder(
+                            itemCount: zekrList.length,
+                            itemBuilder: (context, index) {
+                              return ZekrCard(
+                                zekrId: 'zekr${zekrList[index]["id"]}',
+                                zekr: zekrList[index]['zekr'],
+                                zekrCount: zekrList[index]['zekrCount'],
+                                zekrCounted: zekrList[index]['zekrCounted'],
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),

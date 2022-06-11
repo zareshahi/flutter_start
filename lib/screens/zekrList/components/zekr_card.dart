@@ -275,6 +275,29 @@ class _ZekrCardState extends State<ZekrCard> {
                                 ),
                               ),
                             )
+                          ] else if (int.parse(widget.zekrId
+                                      .replaceAll(RegExp(r'[^0-9]'), '')) <
+                                  100 &&
+                              int.parse(widget.zekrId
+                                      .replaceAll(RegExp(r'[^0-9]'), '')) >
+                                  0) ...[
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              margin: const EdgeInsets.only(left: 4),
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
+                              ),
+                              child: const Text(
+                                'ذکر آنلاین',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
                           ]
                         ],
                       ),
