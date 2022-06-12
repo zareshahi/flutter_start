@@ -154,6 +154,11 @@ class _ZekrCardState extends State<ZekrCard> {
       key: UniqueKey(),
       background: slideRightBackground(),
       secondaryBackground: slideLeftBackground(),
+      direction: (int.parse(widget.zekrId.replaceAll(RegExp(r'[^0-9]'), '')) <=
+                  100 &&
+              int.parse(widget.zekrId.replaceAll(RegExp(r'[^0-9]'), '')) >= 0)
+          ? DismissDirection.none
+          : DismissDirection.horizontal,
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           // Delete Zekr
