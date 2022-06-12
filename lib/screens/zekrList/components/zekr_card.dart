@@ -169,7 +169,6 @@ class _ZekrCardState extends State<ZekrCard> {
                       TextButton(
                         child: const Text(
                           "لغو",
-                          style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () {
                           Navigator.of(context).pop(false);

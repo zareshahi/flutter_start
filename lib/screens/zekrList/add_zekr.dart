@@ -97,9 +97,9 @@ class _AddZekrState extends State<AddZekr> {
                   controller: _zekr,
                   textDirection: TextDirection.rtl,
                   decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'نام ذکر',
-                  ),
+                      border: OutlineInputBorder(),
+                      labelText: 'نام ذکر',
+                      labelStyle: TextStyle(color: Colors.grey)),
                   onSaved: (String? value) {},
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -119,8 +119,9 @@ class _AddZekrState extends State<AddZekr> {
                   keyboardType: TextInputType.number,
                   textDirection: TextDirection.ltr,
                   decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
+                    border: OutlineInputBorder(),
                     labelText: 'تعداد ذکر',
+                    labelStyle: TextStyle(color: Colors.grey),
                   ),
                   onSaved: (String? value) {},
                   validator: (value) {
