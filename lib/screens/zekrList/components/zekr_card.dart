@@ -10,12 +10,14 @@ class ZekrCard extends StatefulWidget {
       required this.zekrId,
       required this.zekr,
       required this.zekrCount,
-      required this.zekrCounted})
+      required this.zekrCounted,
+      this.onlineZekrCounted})
       : super(key: key);
   final String zekrId;
   final String zekr;
   final int zekrCount;
   final int zekrCounted;
+  final int? onlineZekrCounted;
 
   @override
   State<ZekrCard> createState() => _ZekrCardState();
@@ -253,6 +255,13 @@ class _ZekrCardState extends State<ZekrCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          if (widget.onlineZekrCounted != null) ...[
+                            Text(
+                              '${widget.onlineZekrCounted} :مقدار کل',
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            const SizedBox(width: 10)
+                          ],
                           Text(
                             '${widget.zekrCounted} :شمرده شده',
                             style: const TextStyle(color: Colors.black),

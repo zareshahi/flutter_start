@@ -9,6 +9,7 @@ import 'package:zekr_shomar/screens/zekrList/zekr_list.dart';
 import 'package:zekr_shomar/services/storage_manager.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class ZekrShomar extends StatefulWidget {
   final String zekrId;
@@ -32,33 +33,136 @@ class _ZekrShomarState extends State<ZekrShomar> {
   };
   String zekrId = 'zekr2';
 
+  void _countOnlineZekr() async {
+    if (zekrMap['id'] < 101 && zekrMap['id'] > 0) {
+      try {
+        // get last online number
+        http.Response getResponse = await http
+            .get(Uri.parse(
+                'http://192.168.1.105:5642/zekr?id=eq.${zekrMap['id']}'))
+            .timeout(const Duration(seconds: 5));
+        if (getResponse.statusCode == 200) {
+          var responseData = jsonDecode(getResponse.body);
+          //Creating a list to store input data;
+          for (var singleZekr in responseData) {
+            zekrMap = {
+              'id': singleZekr["id"],
+              'zekr': singleZekr["zekr"],
+              'zekrCount': singleZekr["zekrcount"],
+              'zekrCounted': zekrMap['zekrCounted'],
+              'onlineZekrCounted': singleZekr["zekrcounted"]
+            };
+          }
+        } else {
+          throw Exception('error in connection');
+        }
+        // send Data
+        var data = jsonEncode({
+          'id': zekrMap['id'],
+          'zekr': zekrMap['zekr'],
+          'zekrcount': zekrMap['zekrCount'],
+          'zekrcounted': zekrMap['onlineZekrCounted'] + 1
+        });
+        http.Response response = await http.put(
+            Uri.parse('http://192.168.1.105:5642/zekr?id=eq.${zekrMap['id']}'),
+            body: data,
+            headers: {
+              "Content-Type": "application/json"
+            }).timeout(const Duration(seconds: 5));
+        if (response.statusCode == 204) {
+          // ok
+          // Count
+          setState(() {
+            zekrMap['zekrCounted']++;
+            zekrMap['onlineZekrCounted']++;
+          });
+          saveZekr();
+        } else {
+          throw Exception('error in connection');
+        }
+      } catch (e) {
+        // connection lost or throw exception
+        // vibrate for notify to user
+        HapticFeedback.vibrate();
+        sleep(const Duration(milliseconds: 200));
+        HapticFeedback.vibrate();
+        sleep(const Duration(milliseconds: 200));
+        HapticFeedback.vibrate();
+        // show snackbar message to user
+        const snackBar = SnackBar(
+          content: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Text('ارسال آنلاین ذکر با خطا مواجه شد'),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+  }
+
   Future _counterCount() async {
     await getPrefs();
     setState(() {
-      if (zekrMap['zekrCounted'] < zekrMap['zekrCount']) {
-        // counting remaining
-        if (zekrMap['zekrCounted'] == zekrMap['zekrCount'] - 1) {
-          // Counter reaches end
-          _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
-          HapticFeedback.vibrate();
-          sleep(const Duration(milliseconds: 200));
-          HapticFeedback.vibrate();
-          sleep(const Duration(milliseconds: 200));
-          HapticFeedback.vibrate();
-        }
-        zekrMap['zekrCounted']++;
-        saveZekr();
-        if (_isVibrate ?? false) {
-          HapticFeedback.vibrate();
-        }
-      } else {
+      if (zekrMap['zekrCounted'] >= zekrMap['zekrCount'] ||
+          zekrMap['onlineZekrCounted'] >= zekrMap['zekrCount']) {
         // Counter reaches end
-        _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
+        if (zekrMap['id'] < 101 && zekrMap['id'] > 0) {
+          // online mode
+          const snackBar = SnackBar(
+            content: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Text('شمارش ذکر به پایان رسید'),
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          // offline mode
+          _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
+        }
         HapticFeedback.vibrate();
         sleep(const Duration(milliseconds: 200));
         HapticFeedback.vibrate();
         sleep(const Duration(milliseconds: 200));
         HapticFeedback.vibrate();
+      } else {
+        // counting remaining
+        if ((zekrMap['zekrCounted'] == zekrMap['zekrCount'] - 1) ||
+            (zekrMap['onlineZekrCounted'] == zekrMap['zekrCount'] - 1)) {
+          // Counter reaches end
+          if (zekrMap['id'] < 101 && zekrMap['id'] > 0) {
+            // online mode
+            const snackBar = SnackBar(
+              content: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Text('شمارش ذکر به پایان رسید'),
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            // offline mode
+            _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
+          }
+          // vibrate alert for user to notify ending
+          HapticFeedback.vibrate();
+          sleep(const Duration(milliseconds: 200));
+          HapticFeedback.vibrate();
+          sleep(const Duration(milliseconds: 200));
+          HapticFeedback.vibrate();
+        }
+        // if counting remain - counter work
+        if (zekrMap['id'] < 101 && zekrMap['id'] > 0) {
+          // online Zekr counting
+          _countOnlineZekr();
+        } else {
+          // offlie zekr counting
+          zekrMap['zekrCounted']++;
+          saveZekr();
+        }
+        // check vibrate enabled in settings
+        if (_isVibrate ?? false) {
+          // vibrate by count
+          HapticFeedback.vibrate();
+        }
       }
     });
   }
@@ -203,8 +307,19 @@ class _ZekrShomarState extends State<ZekrShomar> {
                           '${zekrMap['zekrCounted']}',
                           style: TextStyle(fontSize: _fontSize ?? 50),
                         ),
+                        if (zekrMap['onlineZekrCounted'] != null) ...[
+                          const SizedBox(height: 26),
+                          const Text(
+                            'مقدار شمرده شده آنلاین تا کنون',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Text(
+                            '${zekrMap["onlineZekrCounted"]}',
+                            style: const TextStyle(fontSize: 16),
+                          )
+                        ],
                         SizedBox(
-                          height: size.height / 6,
+                          height: size.height / 8,
                         ),
                       ],
                     ),

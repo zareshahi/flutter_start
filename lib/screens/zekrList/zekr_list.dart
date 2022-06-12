@@ -19,6 +19,7 @@ class _ZekrListState extends State<ZekrList> {
   int zekrLen = 0;
   List zekrList = [];
   var url = Uri.parse('http://192.168.1.105:5642/zekr');
+  bool isOnline = false;
 
   Future<void> getDailyZekr() async {
     final prefs = await SharedPreferences.getInstance();
@@ -64,15 +65,6 @@ class _ZekrListState extends State<ZekrList> {
 
   Future getOnlineZekrList() async {
     final prefs = await SharedPreferences.getInstance();
-    // remove old online zekr values
-    for (int i = 1; i < 101; i++) {
-      try {
-        // remove values in local storage
-        prefs.remove('zekr$i');
-      } catch (e) {
-        continue;
-      }
-    }
     try {
       http.Response response =
           await http.get(url).timeout(const Duration(seconds: 5));
@@ -80,15 +72,26 @@ class _ZekrListState extends State<ZekrList> {
         var responseData = jsonDecode(response.body);
         //Creating a list to store input data;
         for (var singleZekr in responseData) {
+          if (singleZekr['zekrcount'] <= singleZekr['zekrcounted']) {
+            // Remove fininshed zekrs
+            prefs.remove('zekr${singleZekr["id"]}');
+            continue;
+          }
+          var zekrElmt =
+              jsonDecode(prefs.getString('zekr${singleZekr["id"]}') ?? '{}');
           Map zekrMap = {
             'id': singleZekr["id"],
             'zekr': singleZekr["zekr"],
             'zekrCount': singleZekr["zekrcount"],
-            'zekrCounted': singleZekr["zekrcounted"]
+            'zekrCounted': zekrElmt['zekrCounted'] ?? 0,
+            'onlineZekrCounted': singleZekr["zekrcounted"]
           };
           prefs.setString('zekr${singleZekr["id"]}', jsonEncode(zekrMap));
         }
-        getZekrList();
+        setState(() {
+          isOnline = true;
+          getZekrList();
+        });
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
@@ -102,8 +105,11 @@ class _ZekrListState extends State<ZekrList> {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // refresh the page
-      getZekrList();
+      // refresh the page without internet
+      setState(() {
+        isOnline = false;
+        getZekrList();
+      });
       return null;
     }
   }
@@ -121,7 +127,11 @@ class _ZekrListState extends State<ZekrList> {
     setState(() {
       // add offline zekrs
       var lastZekrId = prefs.getInt('lastZekrId') ?? 0;
-      for (int i = 1; i <= lastZekrId; i++) {
+      int i = 101;
+      if (isOnline) {
+        i = 1;
+      }
+      for (i; i <= lastZekrId; i++) {
         try {
           Map zekrMap = jsonDecode(prefs.getString('zekr$i') ?? '');
           zekrList.add(zekrMap);
@@ -276,6 +286,8 @@ class _ZekrListState extends State<ZekrList> {
                                 zekr: zekrList[index]['zekr'],
                                 zekrCount: zekrList[index]['zekrCount'],
                                 zekrCounted: zekrList[index]['zekrCounted'],
+                                onlineZekrCounted: zekrList[index]
+                                    ['onlineZekrCounted'],
                               );
                             },
                           ),
