@@ -103,11 +103,20 @@ class _ZekrShomarState extends State<ZekrShomar> {
   Future _counterCount() async {
     await getPrefs();
     setState(() {
-      if (zekrMap['zekrCounted'] >= zekrMap['zekrCount'] ||
+      if (zekrMap['zekrCounted'] >= zekrMap['zekrCount']) {
+        // Counter reaches end
+        // offline mode
+        _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
+        HapticFeedback.vibrate();
+        sleep(const Duration(milliseconds: 200));
+        HapticFeedback.vibrate();
+        sleep(const Duration(milliseconds: 200));
+        HapticFeedback.vibrate();
+      } else if (zekrMap['onlineZekrCounted'] != null &&
           zekrMap['onlineZekrCounted'] >= zekrMap['zekrCount']) {
         // Counter reaches end
+        // online mode
         if (zekrMap['id'] < 101 && zekrMap['id'] > 0) {
-          // online mode
           const snackBar = SnackBar(
             content: Directionality(
               textDirection: TextDirection.rtl,
@@ -115,9 +124,6 @@ class _ZekrShomarState extends State<ZekrShomar> {
             ),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else {
-          // offline mode
-          _showResetAlertDialog(context, 'شمارش ذکر به پایان رسید');
         }
         HapticFeedback.vibrate();
         sleep(const Duration(milliseconds: 200));
