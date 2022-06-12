@@ -223,8 +223,8 @@ class _ZekrCardState extends State<ZekrCard> {
         child: Container(
             width: size.width,
             margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-            height: 96,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            // height: 96,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -251,64 +251,57 @@ class _ZekrCardState extends State<ZekrCard> {
                               color: Colors.black, fontSize: 24),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (widget.onlineZekrCounted != null) ...[
-                            Text(
-                              '${widget.onlineZekrCounted} :مقدار کل',
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                            const SizedBox(width: 10)
-                          ],
-                          Text(
-                            '${widget.zekrCounted} :شمرده شده',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          if (widget.zekrId == 'zekr0') ...[
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              margin: const EdgeInsets.only(left: 4),
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(6),
-                                ),
-                              ),
-                              child: Text(
-                                'ذکر روز $day',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ] else if (int.parse(widget.zekrId
-                                      .replaceAll(RegExp(r'[^0-9]'), '')) <
-                                  100 &&
-                              int.parse(widget.zekrId
-                                      .replaceAll(RegExp(r'[^0-9]'), '')) >
-                                  0) ...[
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              margin: const EdgeInsets.only(left: 4),
-                              decoration: const BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(6),
-                                ),
-                              ),
-                              child: const Text(
-                                'ذکر آنلاین',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
+                      Text(
+                        '${widget.zekrCounted} :شمرده شده توسط شما',
+                        style: const TextStyle(color: Colors.black),
                       ),
+                      if (widget.onlineZekrCounted != null) ...[
+                        Text(
+                          '${widget.onlineZekrCounted} :مقدار کل شمرده شده',
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        const SizedBox(width: 10)
+                      ],
+                      if (widget.zekrId == 'zekr0') ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          margin: const EdgeInsets.only(left: 4),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(6),
+                            ),
+                          ),
+                          child: Text(
+                            'ذکر روز $day',
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      ] else if (int.parse(widget.zekrId
+                                  .replaceAll(RegExp(r'[^0-9]'), '')) <
+                              100 &&
+                          int.parse(widget.zekrId
+                                  .replaceAll(RegExp(r'[^0-9]'), '')) >
+                              0) ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          margin: const EdgeInsets.only(left: 4),
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(6),
+                            ),
+                          ),
+                          child: const Text(
+                            'ذکر آنلاین',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      ]
                     ],
                   ),
                 ),
